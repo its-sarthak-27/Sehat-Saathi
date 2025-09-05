@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sehat Saathi Quiz</title>
+<style>
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --primary: #2563eb;
+  --primary-2: #7c3aed;
+  --accent: #059669;
+  --shadow: 0 12px 40px rgba(0,0,0,.06);
+  --radius: 20px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+/* Header */
+header {
+  position: sticky; top: 0;
+  backdrop-filter: saturate(180%) blur(12px);
+  background: rgba(255,255,255,.75);
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 10;
+}
+.nav {
+  max-width: 1200px; margin: 0 auto; padding: 14px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  font-weight: 800; font-size: 20px;
+}
+.logo {
+  width: 42px; height: 42px; border-radius: 14px;
+  background: conic-gradient(from 220deg at 50% 50%, var(--primary), var(--primary-2), var(--accent));
+  box-shadow: var(--shadow);
+}
+.right { margin-left: auto; display: flex; gap: 12px; flex-wrap: wrap; }
+.chip {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 999px;
+  padding: 8px 14px; font-weight: 600; font-size: 14px; cursor: default;
+}
+
+/* Main */
+
+main { flex:1; max-width: 800px; margin: 0 auto; padding: 40px 20px 100px; }
+h2 { font-size: 24px; margin-bottom: 18px; color: var(--primary); }
+.card {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+  transition: transform .3s, box-shadow .3s;
+}
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.08);
+}
+button {
+  background: var(--primary);
+  color:#fff;
+  border:none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight:600;
+  cursor:pointer;
+  margin: 6px 4px 0 0;
+}
+button:hover { background: var(--primary-2); }
+.poll-option {
+  display:block;
+  margin:8px 0;
+  padding:10px 15px;
+  border-radius: 12px;
+  background:#e0f2fe;
+  border:1px solid var(--primary);
+  cursor:pointer;
+  transition: transform .2s, background .2s;
+}
+
+.profile-menu {
+  position: relative;
+}
+
+.profile-icon {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.profile-icon:hover {
+  background: #f1f5f9;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  display: none;
+  flex-direction: column;
+  min-width: 160px;
+  padding: 10px 0;
+  z-index: 20;
+}
+
+.profile-dropdown a {
+  display: block;
+  padding: 10px 16px;
+  color: #111827;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.profile-dropdown a:hover {
+  background: #f3f4f6;
+}
+
+.poll-option:hover { background:#bae6fd; transform: scale(1.03); }
+.fun-fact { font-style: italic; color: var(--accent); }
+.quote { font-weight:bold; font-size:1.1em; text-align:center; color: var(--primary-2); }
+.log { margin-top: 15px; background: #eef2ff; border:1px solid #c7d2fe; border-radius:14px; padding:16px; font-size:15px; }
+footer {
+  text-align:center; border-top:1px solid #e2e8f0;
+  padding:20px; font-size:14px; color:#64748b;
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="brand">
+      <div><img src="sehat.png" height=30 width=30 alt="Health illustration"></div>
+      <span>Sehat Saathi - Quiz 📝</span>
+    </div>
+    <div class="right">
+      <span class="chip">Log In</span>
+      <span class="chip">Sign In</span>
+      <!-- <span><img src="icons8-profile.gif" alt="Health illustration"></span> -->
+
+      <div class="profile-menu">
+      <button id="profileBtn" class="profile-icon" aria-label="Profile Menu"><img src="icons8-profile.gif" alt="Health illustration"></button>
+       <div class="profile-dropdown" id="profileDropdown">
+        <a href="#">Profile</a>
+        <a href="#">Settings</a>
+        <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Help</a>
+    </div>
+  </div>
+  
+</header>
+
+<main>
+  <!-- Dynamic Quiz -->
+  <h2>📝 Quick Health Quiz</h2>
+  <div class="card" id="quizCard">
+    <p id="quizQuestion"></p>
+    <div id="quizOptions"></div>
+    <div class="log" id="quizLog">💡 Select your answer above</div>
+  </div>
+
+  <!-- Health Tips -->
+  <h2>💡 Health Tips</h2>
+  <div class="card">Drink warm water in the morning to kickstart your metabolism.</div>
+  <div class="card">Include at least 5 servings of fruits and vegetables in your daily diet.</div>
+  <div class="card">Take short walking breaks every 2 hours if you work at a desk.</div>
+
+  <!-- Poll -->
+  <h2>📊 Your Opinion</h2>
+  <div class="card">
+    <p>What's your favorite way to stay active?</p>
+    <div class="poll-option" onclick="pollVote('Walking')">🚶 Walking</div>
+    <div class="poll-option" onclick="pollVote('Yoga')">🧘 Yoga</div>
+    <div class="poll-option" onclick="pollVote('Gym')">🏋️ Gym</div>
+    <div class="poll-option" onclick="pollVote('Cycling')">🚴 Cycling</div>
+    <div class="log" id="pollLog">💬 Select an option above</div>
+  </div>
+
+  <!-- Fun Facts -->
+  <h2>🤔 Did You Know?</h2>
+  <div class="card fun-fact">Honey never spoils and can last thousands of years.</div>
+  <div class="card fun-fact">Laughing 100 times is equivalent to 10 minutes of jogging.</div>
+
+  <!-- Motivational Quotes -->
+  <h2>💖 Motivational Quotes</h2>
+  <div class="card quote">“Health is wealth. Take care of yourself every day.”</div>
+  <div class="card quote">“Small steps every day lead to big changes.”</div>
+</main>
+
+<footer>© 2025 Seva Health • Fun & Healthy Living</footer>
+
+<script>
+// Quiz Data - 10 questions
+const quizData = [
+  { q: "How many glasses of water should you drink daily?", options: ["4", "8", "12"], answer: "8" },
+  { q: "Which vitamin is essential for strong bones?", options: ["Vitamin C", "Vitamin D", "Vitamin A"], answer: "Vitamin D" },
+  { q: "What is the recommended sleep duration for adults?", options: ["5-6 hours", "7-9 hours", "10-12 hours"], answer: "7-9 hours" },
+  { q: "Which nutrient helps build muscle?", options: ["Protein", "Carbs", "Fat"], answer: "Protein" },
+  { q: "How often should you exercise weekly?", options: ["1-2 days", "3-5 days", "7 days"], answer: "3-5 days" },
+  { q: "Which is a healthy fat?", options: ["Butter", "Avocado", "Margarine"], answer: "Avocado" },
+  { q: "Which mineral is important for blood?", options: ["Iron", "Calcium", "Zinc"], answer: "Iron" },
+  { q: "What reduces stress naturally?", options: ["Meditation", "Watching TV", "Fast food"], answer: "Meditation" },
+  { q: "Which drink is best for hydration?", options: ["Soda", "Water", "Coffee"], answer: "Water" },
+  { q: "How many steps per day are recommended for general health?", options: ["2000", "5000", "10000"], answer: "10000" },
+];
+
+let currentQuestion = 0;
+
+function loadQuestion() {
+  if(currentQuestion >= quizData.length){
+    document.getElementById('quizCard').innerHTML = "<p>🎉 Congratulations! You've completed the quiz!</p>";
+    return;
+  }
+  const q = quizData[currentQuestion];
+  document.getElementById('quizQuestion').innerText = "Q"+(currentQuestion+1)+": " + q.q;
+
+  const optionsDiv = document.getElementById('quizOptions');
+  optionsDiv.innerHTML = "";
+  q.options.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.innerText = opt;
+    btn.onclick = () => answerQuiz(opt);
+    optionsDiv.appendChild(btn);
+  });
+
+  document.getElementById('quizLog').innerText = "💡 Select your answer above";
+}
+
+function answerQuiz(selected){
+  const q = quizData[currentQuestion];
+  const log = document.getElementById('quizLog');
+  if(selected === q.answer){
+    log.innerText = "✅ Correct! Moving to next question...";
+    currentQuestion++;
+    setTimeout(loadQuestion, 1000);
+  } else {
+    log.innerText = "❌ Not quite. Try again!";
+  }
+}
+
+function pollVote(option) {
+  document.getElementById("pollLog").innerText = `✅ You voted for "${option}"! Thanks for sharing.`;
+}
+
+// Initial load
+loadQuestion();
+</script>
+
+
+<script>
+const profileBtn = document.getElementById('profileBtn');
+const profileDropdown = document.getElementById('profileDropdown');
+
+profileBtn.addEventListener('click', () => {
+  profileDropdown.style.display = profileDropdown.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Close when clicking outside
+document.addEventListener('click', (e) => {
+  if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+    profileDropdown.style.display = 'none';
+  }
+});
+</script>
+
+
+</body>
+</html>
