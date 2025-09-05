@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seva Health – Multi Games</title>
+<style>
+body{margin:0;font-family:sans-serif;background:#f0fdf4;color:#0f172a;text-align:center;}
+header{position:sticky;top:0;background:#fff;padding:12px 20px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:12px;z-index:10;}
+header .logo{width:40px;height:40px;border-radius:12px;background:conic-gradient(from 220deg at 50% 50%,#2563eb,#7c3aed,#059669);}
+header h1{font-size:20px;font-weight:800;}
+main{max-width:1200px;margin:20px auto;padding:20px;}
+.menu{display:flex;justify-content:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.menu button{padding:12px 18px;border-radius:12px;border:none;font-weight:600;cursor:pointer;background:#2563eb;color:#fff;transition:transform .2s;}
+.menu button:hover{transform:scale(1.05);}
+canvas{background:#e0f2fe;border-radius:16px;display:block;margin:0 auto;}
+#scoreLog,#tipLog,#rpsResult,#tictoeBoard{margin-top:10px;font-weight:600;font-size:16px;}
+#tictoeBoard{display:grid;grid-template-columns:repeat(3,60px);grid-gap:5px;justify-content:center;margin-top:20px;}
+.tictoeCell{width:60px;height:60px;background:#fff;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:700;border:2px solid #7c3aed;cursor:pointer;}
+.rpsButton{padding:10px 14px;margin:5px;border-radius:12px;border:none;background:#7c3aed;color:#fff;font-weight:600;cursor:pointer;}
+</style>
+</head>
+<body>
+<header><div><img src="sehat.png" height=30 width=30 alt="Health illustration"></div><h1>Seva Health Games</h1></header>
+<main>
+<div class="menu">
+<button onclick="switchGame(0)">Water Catcher</button>
+<button onclick="switchGame(1)">Jump Ninja</button>
+<button onclick="switchGame(2)">Chess Mini</button>
+<button onclick="switchGame(3)">Tic Tac Toe</button>
+<button onclick="switchGame(4)">Rock Paper Scissors</button>
+</div>
+<canvas id="gameCanvas" width="360" height="480"></canvas>
+<div id="scoreLog">Score: 0</div>
+<div id="tipLog"></div>
+<div id="tictoeBoard" style="display:none;"></div>
+<div id="rpsControls" style="display:none;">
+  <button class="rpsButton" onclick="playRPS('rock')">🪨 Rock</button>
+  <button class="rpsButton" onclick="playRPS('paper')">📄 Paper</button>
+  <button class="rpsButton" onclick="playRPS('scissors')">✂️ Scissors</button>
+  <div id="rpsResult"></div>
+</div>
+
+<script>
+const canvas=document.getElementById('gameCanvas');
+const ctx=canvas.getContext('2d');
+const scoreLog=document.getElementById('scoreLog');
+const tipLog=document.getElementById('tipLog');
+const tictoeBoard=document.getElementById('tictoeBoard');
+const rpsControls=document.getElementById('rpsControls');
+const rpsResult=document.getElementById('rpsResult');
+
+let currentGame=0,score=0,gameLoopId=null;
+let keys={left:false,right:false,up:false};
+const tips=["Drink 8 glasses water","Wash hands frequently","Eat 5 fruits/veggies","Exercise 30 mins daily","Sleep 7-8 hours"];
+
+document.addEventListener('keydown',e=>{
+  if(e.key==="ArrowLeft") keys.left=true;
+  if(e.key==="ArrowRight") keys.right=true;
+  if(e.key==="ArrowUp") keys.up=true;
+});
+document.addEventListener('keyup',e=>{
+  if(e.key==="ArrowLeft") keys.left=false;
+  if(e.key==="ArrowRight") keys.right=false;
+  if(e.key==="ArrowUp") keys.up=false;
+});
+
+function checkTips(){
+  if(score>0 && score%5===0){
+    tipLog.innerText="💡 Tip: "+tips[Math.floor(Math.random()*tips.length)];
+  }
+}
+
+function clearCanvas(){ ctx.clearRect(0,0,canvas.width,canvas.height); }
+
+function switchGame(n){
+  cancelAnimationFrame(gameLoopId);
+  currentGame=n;
+  score=0;
+  scoreLog.innerText="Score: 0";
+  tipLog.innerText="";
+  keys={left:false,right:false,up:false};
+  clearCanvas();
+  tictoeBoard.style.display='none';
+  rpsControls.style.display='none';
+  canvas.style.display='block';
+  initGame();
+}
+
+// -------------------- GAMES --------------------
+function initGame(){
+  // 0: Water Catcher
+  if(currentGame===0){
+    const bucket={x:150,y:440,width:60,height:20};
+    let drops=[];
+    for(let i=0;i<5;i++){
+      drops.push({x:Math.random()*320,y:-Math.random()*300,size:15});
+    }
+    function draw(){
+      clearCanvas();
+      ctx.fillStyle="#0ea5e9";
+      ctx.fillRect(bucket.x,bucket.y,bucket.width,bucket.height);
+      drops.forEach(d=>{
+        ctx.beginPath();
+        ctx.arc(d.x,d.y,d.size,0,Math.PI*2);
+        ctx.fillStyle="#38bdf8";
+        ctx.fill();
+      });
+    }
+    function update(){
+      if(keys.left && bucket.x>0) bucket.x-=6;
+      if(keys.right && bucket.x<canvas.width-bucket.width) bucket.x+=6;
+      drops.forEach(d=>{
+        d.y+=3;
+        if(d.y>canvas.height){ d.y=-20; d.x=Math.random()*320; }
+        if(d.y+d.size>bucket.y && d.x>bucket.x && d.x<bucket.x+bucket.width){
+          score++; scoreLog.innerText="Score: "+score;
+          checkTips();
+          d.y=-20; d.x=Math.random()*320;
+        }
+      });
+    }
+    function loop(){ update(); draw(); gameLoopId=requestAnimationFrame(loop); }
+    loop();
+  }
+  // 1: Jump Ninja
+  else if(currentGame===1){
+    let player={x:160,y:400,width:40,height:40,vy:0,jumping:false};
+    let platforms=[];
+    for(let i=0;i<5;i++) platforms.push({x:Math.random()*300,y:i*90+50,width:80,height:10});
+    function draw(){
+      clearCanvas();
+      ctx.fillStyle="#7c3aed";
+      ctx.fillRect(player.x,player.y,player.width,player.height);
+      ctx.fillStyle="#fbbf24";
+      platforms.forEach(p=>ctx.fillRect(p.x,p.y,p.width,p.height));
+    }
+    function update(){
+      if(keys.up && !player.jumping){ player.vy=-12; player.jumping=true; }
+      player.vy+=0.6; player.y+=player.vy;
+      if(player.y>canvas.height-40){ player.y=canvas.height-40; player.vy=0; player.jumping=false; }
+      if(keys.left && player.x>0) player.x-=5;
+      if(keys.right && player.x<canvas.width-player.width) player.x+=5;
+      platforms.forEach(p=>{
+        if(player.y+player.height>p.y && player.y+player.height< p.y+p.height && player.x+player.width>p.x && player.x<p.x+p.width){
+          player.vy=0; player.jumping=false;
+          score++; scoreLog.innerText="Score: "+score;
+          checkTips();
+        }
+      });
+    }
+    function loop(){ update(); draw(); gameLoopId=requestAnimationFrame(loop); }
+    loop();
+  }
+  // 2: Chess Mini
+  // Chess Mini
+else if(currentGame===2){
+    clearCanvas();
+    const rows=8,cols=8;
+    const cellSize=canvas.width/cols;
+    let pawns=[{col:3,row:7}]; // starting pawn
+    scoreLog.innerText="Score: 0";
+    tipLog.innerText="💡 Tip: Move pawn to top row!";
+    
+    function draw(){
+        clearCanvas();
+        // draw board
+        for(let r=0;r<rows;r++){
+            for(let c=0;c<cols;c++){
+                ctx.fillStyle=(r+c)%2===0?"#f3f4f6":"#2563eb";
+                ctx.fillRect(c*cellSize,r*cellSize,cellSize,cellSize);
+            }
+        }
+        // draw pawn
+        ctx.fillStyle="#fbbf24";
+        pawns.forEach(p=>{
+            ctx.beginPath();
+            ctx.arc(p.col*cellSize+cellSize/2,p.row*cellSize+cellSize/2,cellSize/2.5,0,Math.PI*2);
+            ctx.fill();
+        });
+    }
+
+    function movePawn(dir){
+        let p=pawns[0];
+        if(dir==="up" && p.row>0){ p.row--; score++; scoreLog.innerText="Score: "+score; checkTips(); }
+        if(dir==="left" && p.col>0) p.col--;
+        if(dir==="right" && p.col<cols-1) p.col++;
+    }
+
+    draw();
+
+    document.onkeydown=function(e){
+        if(e.key==="ArrowUp") movePawn("up");
+        if(e.key==="ArrowLeft") movePawn("left");
+        if(e.key==="ArrowRight") movePawn("right");
+        draw();
+    };
+}
+
+  // 3: Tic Tac Toe
+  else if(currentGame===3){
+    canvas.style.display='none';
+    tictoeBoard.style.display='grid';
+    tictoeBoard.innerHTML='';
+    let board=["","","","","","","","",""];
+    let turn="X";
+    function drawBoard(){
+      tictoeBoard.innerHTML='';
+      board.forEach((cell,i)=>{
+        let div=document.createElement('div');
+        div.className='tictoeCell';
+        div.innerText=cell;
+        div.addEventListener('click',()=>{
+          if(cell===""){
+            board[i]=turn;
+            turn=turn==="X"?"O":"X";
+            drawBoard();
+            checkWinner();
+          }
+        });
+        tictoeBoard.appendChild(div);
+      });
+    }
+    function checkWinner(){
+      const lines=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+      for(const [a,b,c] of lines){
+        if(board[a] && board[a]===board[b] && board[a]===board[c]){
+          score+=3;
+          scoreLog.innerText="Score: "+score;
+          tipLog.innerText="💡 Tip: Keep your mind active!";
+          return;
+        }
+      }
+    }
+    drawBoard();
+  }
+  // 4: Rock Paper Scissors
+  else if(currentGame===4){
+    canvas.style.display='none';
+    rpsControls.style.display='block';
+    rpsResult.innerText='';
+  }
+}
+
+// ---------------- RPS ----------------
+function playRPS(playerChoice){
+  const options=['rock','paper','scissors'];
+  const ai=options[Math.floor(Math.random()*3)];
+  let result="";
+  if(playerChoice===ai) result="Draw";
+  else if((playerChoice==="rock" && ai==="scissors")||(playerChoice==="paper" && ai==="rock")||(playerChoice==="scissors" && ai==="paper")) result="You Win!";
+  else result="AI Wins!";
+  rpsResult.innerText=`AI chose ${ai}. ${result}`;
+  if(result==="You Win!") score+=2;
+  else if(result==="Draw") score+=1;
+  scoreLog.innerText="Score: "+score;
+  checkTips();
+}
+
+// Initialize first game
+switchGame(0);
+</script>
+</body>
+</html>

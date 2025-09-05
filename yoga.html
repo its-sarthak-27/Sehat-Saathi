@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Yoga & Exercise – Seva Health</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --primary: #2563eb;
+  --primary-2: #7c3aed;
+  --accent: #059669;
+  --ring: #3b82f6;
+  --shadow: 0 12px 40px rgba(0,0,0,.06);
+  --radius: 20px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.55;
+}
+a { color: inherit; text-decoration: none; transition: color .2s; }
+a:hover { color: var(--primary); }
+
+body::before {
+  content: ""; position: fixed; inset: 0;
+  background:
+    radial-gradient(1400px 700px at 10% -10%, rgba(124,58,237,.12), transparent 60%),
+    radial-gradient(1200px 700px at 110% 10%, rgba(37,99,235,.12), transparent 60%),
+    linear-gradient(180deg,#f1f5f9 0%,#ffffff 50%,#ffffff 100%);
+  z-index: -2;
+}
+body::after {
+  content: ""; position: fixed; inset: 0; opacity: .1; pointer-events: none; z-index: -1;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.04"/></svg>');
+  background-size: 300px 300px;
+}
+
+header {
+  position: sticky; top: 0;
+  backdrop-filter: saturate(180%) blur(12px);
+  background: rgba(255,255,255,.8);
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 10;
+}
+.nav {
+  max-width: 1200px; margin: 0 auto; padding: 14px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  font-weight: 800; font-size: 20px;
+}
+.logo {
+  width: 42px; height: 42px; border-radius: 14px;
+  background: conic-gradient(from 220deg at 50% 50%, var(--primary), var(--primary-2), var(--accent));
+  box-shadow: var(--shadow);
+}
+.right { margin-left: auto; display: flex; gap: 12px; flex-wrap: wrap; }
+.chip {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 999px;
+  padding: 8px 14px; font-weight: 600; font-size: 14px; cursor: default;
+}
+
+.profile-menu { position: relative; }
+.profile-icon {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  width: 42px; height: 42px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+.profile-icon:hover { background: #f1f5f9; }
+.profile-dropdown {
+  position: absolute;
+  top: 50px; right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  display: none;
+  flex-direction: column;
+  min-width: 160px;
+  padding: 10px 0;
+  z-index: 20;
+}
+.profile-dropdown a {
+  display: block;
+  padding: 10px 16px;
+  color: #111827;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+.profile-dropdown a:hover { background: #f3f4f6; }
+
+main { max-width: 1200px; margin: 0 auto; padding: 36px 20px 80px; }
+
+.hero {
+  display: grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items: center;
+  background: linear-gradient(135deg, rgba(37,99,235,.07), rgba(124,58,237,.07));
+  border: 1px solid #e2e8f0; border-radius: 28px; padding: 28px 32px;
+  box-shadow: var(--shadow);
+}
+.hero h1 { font-size: clamp(32px,3.2vw,48px); font-weight: 800; margin-bottom: 12px; }
+.hero p { color: var(--muted); font-size: 18px; max-width: 480px; }
+.actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 20px; border-radius: 14px; border: 0; cursor: pointer;
+  background: var(--primary); color: #fff; font-weight: 700; font-size: 16px;
+  transition: all .2s;
+}
+.btn:hover { filter: brightness(.95); transform: translateY(-1px); }
+.btn.secondary { background: #fff; color: var(--text); border: 1px solid #e2e8f0; }
+
+.grid {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding: 10px 0 16px;
+  margin-top: 10px;
+}
+.grid::-webkit-scrollbar { height: 8px; }
+.grid::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+.card {
+  flex: 0 0 280px;
+  scroll-snap-align: start;
+  background: var(--card);
+  border: 1px solid #e2e8f0;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  text-align: center;
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.card:hover { transform: translateY(-6px); box-shadow: 0 18px 44px rgba(0,0,0,.08); }
+.card img { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary); margin-bottom: 12px; }
+.card h3 { font-size: 18px; margin-bottom: 6px; }
+.card p { color: var(--muted); font-size: 14px; margin: 4px 0; text-align: left; }
+
+/* Footer */
+footer { max-width: 1200px; margin: 0 auto; padding: 24px 20px; color: #64748b; border-top: 1px solid #e2e8f0; font-size: 14px; }
+
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="brand">
+      <div><img src="sehat.png" height=30 width=30 alt="Health illustration"></div>
+      <span>Sehat Saathi – Yoga & Exercise 🧘‍♂️</span>
+    </div>
+    <div class="right">
+      <span class="chip">Log In</span>
+      <span class="chip">Sign In</span>
+      <div class="profile-menu">
+        <button id="profileBtn" class="profile-icon"><img src="icons8-profile.gif" alt="Health illustration"></button>
+        <div class="profile-dropdown" id="profileDropdown">
+          <a href="#">Profile</a>
+          <a href="#">Settings</a>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+          <a href="#">Help</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <h1>Yoga & Exercise</h1>
+      <p>Improve your health and wellness with daily yoga and exercises. Explore detailed steps and guidance below.</p>
+    </div>
+    <div>
+      <img src="yoga-illustratio.jpg" width="400" height="250" alt="Yoga illustration">
+    </div>
+  </section>
+
+  <h1 style="font-size: clamp(28px,3vw,38px); font-weight:800; margin-bottom:10px;">5 Yogas to Practice</h1>
+  <div class="grid">
+    <div class="card">
+      <img src="y1.jpg" alt="Yoga 1">
+      <h3>1. Tadasana (Mountain Pose)</h3>
+      <p>Step 1: Stand straight with feet together.<br>
+         Step 2: Keep arms at sides, palms open.<br>
+         Step 3: Take a deep breath and raise arms overhead.<br>
+         Step 4: Hold position for 30 sec to 1 min.<br>
+         Step 5: Exhale and return to original position.</p>
+    </div>
+    <div class="card">
+      <img src="y2.jpg" alt="Yoga 2">
+      <h3>2. Vrikshasana (Tree Pose)</h3>
+      <p>Step 1: Stand straight, shift weight to left leg.<br>
+         Step 2: Place right foot on inner left thigh.<br>
+         Step 3: Join palms in prayer at chest.<br>
+         Step 4: Hold balance for 30 sec.<br>
+         Step 5: Switch legs and repeat.</p>
+    </div>
+    <div class="card">
+      <img src="y4.jpg" alt="Yoga 3">
+      <h3>3. Bhujangasana (Cobra Pose)</h3>
+      <p>Step 1: Lie on stomach, hands under shoulders.<br>
+         Step 2: Inhale and lift chest using back muscles.<br>
+         Step 3: Keep elbows close to body.<br>
+         Step 4: Hold for 15–30 sec.<br>
+         Step 5: Exhale and relax.</p>
+    </div>
+    <div class="card">
+      <img src="y3.jpg" alt="Yoga 4">
+      <h3>4. Adho Mukha Svanasana (Downward Dog)</h3>
+      <p>Step 1: Start on hands and knees.<br>
+         Step 2: Lift hips up to form inverted V.<br>
+         Step 3: Keep hands and feet grounded.<br>
+         Step 4: Hold for 30 sec.<br>
+         Step 5: Breathe deeply and release.</p>
+    </div>
+    <div class="card">
+      <img src="y5.jpg" alt="Yoga 5">
+      <h3>5. Shavasana (Corpse Pose)</h3>
+      <p>Step 1: Lie flat on back, arms at sides.<br>
+         Step 2: Close eyes, relax body.<br>
+         Step 3: Breathe naturally.<br>
+         Step 4: Hold for 5–10 min.<br>
+         Step 5: Slowly sit up.</p>
+    </div>
+  </div>
+
+  <h1 style="font-size: clamp(28px,3vw,38px); font-weight:800; margin-top:40px; margin-bottom:10px;">5 Exercises for Fitness</h1>
+  <div class="grid">
+    <div class="card">
+      <img src="placeholder.jpg" alt="Exercise 1">
+      <h3>1. Push-ups</h3>
+      <p>Step 1: Get into plank position.<br>
+         Step 2: Lower body until chest nearly touches floor.<br>
+         Step 3: Push back up.<br>
+         Step 4: Keep core tight.<br>
+         Step 5: Repeat 10–15 times.</p>
+    </div>
+    <div class="card">
+      <img src="placeholder.jpg" alt="Exercise 2">
+      <h3>2. Squats</h3>
+      <p>Step 1: Stand with feet shoulder-width apart.<br>
+         Step 2: Lower hips as if sitting.<br>
+         Step 3: Keep knees behind toes.<br>
+         Step 4: Rise back up.<br>
+         Step 5: Repeat 12–15 times.</p>
+    </div>
+    <div class="card">
+      <img src="placeholder.jpg" alt="Exercise 3">
+      <h3>3. Lunges</h3>
+      <p>Step 1: Stand straight, step forward with right leg.<br>
+         Step 2: Lower hips to 90°.<br>
+         Step 3: Push back to starting position.<br>
+         Step 4: Repeat on other leg.<br>
+         Step 5: Do 10 reps per leg.</p>
+    </div>
+    <div class="card">
+      <img src="placeholder.jpg" alt="Exercise 4">
+      <h3>4. Plank</h3>
+      <p>Step 1: Lie face down.<br>
+         Step 2: Lift body on elbows and toes.<br>
+         Step 3: Keep body straight.<br>
+         Step 4: Hold 30–60 sec.<br>
+         Step 5: Lower slowly.</p>
+    </div>
+    <div class="card">
+      <img src="placeholder.jpg" alt="Exercise 5">
+      <h3>5. Jumping Jacks</h3>
+      <p>Step 1: Stand straight, arms at sides.<br>
+         Step 2: Jump while spreading legs and raising arms.<br>
+         Step 3: Jump back to start.<br>
+         Step 4: Repeat continuously.<br>
+         Step 5: Do 20–30 reps.</p>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div>© 2025 Seva Health • Yoga & Exercise Guidance</div>
+</footer>
+
+<script>
+  const profileBtn = document.getElementById('profileBtn');
+  const profileDropdown = document.getElementById('profileDropdown');
+  profileBtn.addEventListener('click', () => {
+    profileDropdown.style.display = profileDropdown.style.display === 'flex' ? 'none' : 'flex';
+  });
+  document.addEventListener('click', (e) => {
+    if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+      profileDropdown.style.display = 'none';
+    }
+  });
+</script>
+</body>
+</html>

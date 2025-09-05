@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Engagement – Seva Health</title>
+  <style>
+    body {
+      margin:0;
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background:linear-gradient(135deg,#f0fdf4,#ffffff);
+      color:#1e293b;
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+    }
+    header {
+      background:linear-gradient(90deg,#16a34a,#22c55e);
+      color:#fff;
+      padding:25px;
+      text-align:center;
+      font-size:1.8em;
+      font-weight:bold;
+      box-shadow:0 4px 12px rgba(0,0,0,0.25);
+      letter-spacing:1px;
+    }
+    main {
+      flex:1;
+      max-width:900px;
+      margin:0 auto;
+      padding:20px;
+    }
+    h2 {
+      margin-top:25px;
+      font-size:1.3em;
+      color:#065f46;
+    }
+    .card {
+      background:#fff;
+      border-radius:18px;
+      padding:20px;
+      box-shadow:0 6px 14px rgba(0,0,0,0.1);
+      margin-top:15px;
+      transition:transform .2s, box-shadow .2s;
+    }
+    .card:hover {
+      transform:translateY(-3px);
+      box-shadow:0 8px 18px rgba(0,0,0,0.15);
+    }
+    button {
+      padding:12px 20px;
+      border-radius:25px;
+      border:none;
+      background:linear-gradient(90deg,#16a34a,#22c55e);
+      color:#fff;
+      font-weight:600;
+      font-size:1em;
+      cursor:pointer;
+      margin:8px 6px;
+      transition:background .2s, transform .2s;
+    }
+    button:hover {
+      background:linear-gradient(90deg,#15803d,#16a34a);
+      transform:scale(1.05);
+    }
+    .log {
+      margin-top:15px;
+      background:#f0fdf4;
+      border:1px solid #bbf7d0;
+      border-radius:12px;
+      padding:12px;
+      font-size:.95em;
+      color:#065f46;
+      min-height:40px;
+    }
+    /* Game */
+    #gameCanvas {
+      background:#e0f2fe;
+      border:2px solid #0ea5e9;
+      display:block;
+      margin:15px auto;
+      border-radius:14px;
+    }
+    #gameLog {
+      text-align:center;
+      font-size:1.1em;
+      font-weight:bold;
+      margin-top:10px;
+    }
+  </style>
+</head>
+<body>
+  <header>🎮 Engagement Zone</header>
+  <main>
+    <!-- Quiz -->
+    <h2>📝 Quick Health Quiz</h2>
+    <div class="card">
+      <p><strong>Q1:</strong> How many glasses of water should you drink daily?</p>
+      <button onclick="answerQuiz(1,'wrong')">4</button>
+      <button onclick="answerQuiz(1,'correct')">8</button>
+      <button onclick="answerQuiz(1,'wrong')">12</button>
+      <div class="log" id="quizLog1">💡 Select your answer above</div>
+    </div>
+
+    <!-- Daily Streak -->
+    <h2>🔥 Daily Health Streak</h2>
+    <div class="card">
+      <p>Click “Check-In” once per day to keep your streak alive!</p>
+      <button onclick="checkIn()">✅ Check-In</button>
+      <div class="log" id="streakLog">Your streak: 0 days</div>
+    </div>
+
+    <!-- Mini-Game -->
+    <h2>💧 Hydration Hero</h2>
+    <div class="card">
+      <p>Catch the falling water drops with the bucket! Use ⬅️ ➡️ keys.</p>
+      <canvas id="gameCanvas" width="320" height="420"></canvas>
+      <div id="gameLog">Score: 0</div>
+    </div>
+  </main>
+  <footer style="text-align:center;background:#f3f4f6;padding:15px;font-size:.9em;color:#475569;">
+    © 2025 Seva Health • Fun & Healthy Living
+  </footer>
+
+  <script>
+    // Quiz Logic
+    function answerQuiz(q, status) {
+      const log = document.getElementById("quizLog"+q);
+      if (status === "correct") {
+        log.innerText = "✅ Correct! Stay hydrated 💧";
+      } else {
+        log.innerText = "❌ Not quite. Aim for about 8 glasses daily!";
+      }
+    }
+
+    // Streak Tracker
+    let streak = localStorage.getItem("streak") || 0;
+    let lastCheckIn = localStorage.getItem("lastCheckIn") || null;
+    updateStreakLog();
+
+    function checkIn() {
+      const today = new Date().toDateString();
+      if (lastCheckIn === today) {
+        document.getElementById("streakLog").innerText =
+          "⚠️ Already checked in today. Streak: " + streak + " days";
+      } else {
+        streak++;
+        lastCheckIn = today;
+        localStorage.setItem("streak", streak);
+        localStorage.setItem("lastCheckIn", lastCheckIn);
+        updateStreakLog();
+      }
+    }
+    function updateStreakLog() {
+      document.getElementById("streakLog").innerText = "🔥 Your streak: " + streak + " days";
+    }
+
+    // Hydration Hero Game
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    let bucket = {x:130, y:380, width:60, height:20};
+    let drop = {x:Math.random()*300, y:0, size:15};
+    let score = 0;
+
+    function draw() {
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      // Bucket
+      ctx.fillStyle="#0ea5e9";
+      ctx.fillRect(bucket.x, bucket.y, bucket.width, bucket.height);
+      // Drop
+      ctx.beginPath();
+      ctx.arc(drop.x, drop.y, drop.size, 0, Math.PI*2);
+      ctx.fillStyle="#38bdf8";
+      ctx.fill();
+    }
+
+    function update() {
+      drop.y += 3;
+      if (drop.y > canvas.height) {
+        drop.y = 0;
+        drop.x = Math.random()*(canvas.width-20);
+      }
+      // Collision
+      if (
+        drop.y + drop.size > bucket.y &&
+        drop.x > bucket.x &&
+        drop.x < bucket.x + bucket.width
+      ) {
+        score++;
+        document.getElementById("gameLog").innerText = "💧 Score: " + score;
+        drop.y = 0;
+        drop.x = Math.random()*(canvas.width-20);
+      }
+    }
+
+    function gameLoop() {
+      update();
+      draw();
+      requestAnimationFrame(gameLoop);
+    }
+
+    document.addEventListener("keydown", (e)=>{
+      if (e.key === "ArrowLeft" && bucket.x > 0) bucket.x -= 15;
+      if (e.key === "ArrowRight" && bucket.x < canvas.width - bucket.width) bucket.x += 15;
+    });
+
+    gameLoop();
+  </script>
+</body>
+</html>

@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Seva Health – Unified Index</title>
+<meta name="color-scheme" content="light dark" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --primary: #2563eb;
+  --primary-2: #7c3aed;
+  --accent: #059669;
+  --ring: #3b82f6;
+  --shadow: 0 12px 40px rgba(0,0,0,.06);
+  --radius: 20px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.55;
+}
+a { color: inherit; text-decoration: none; transition: color .2s; }
+a:hover { color: var(--primary); }
+img { max-width: 100%; display: block; border-radius: 12px; }
+
+/* Background gradient + noise */
+body::before {
+  content: ""; position: fixed; inset: 0;
+  background:
+    radial-gradient(1400px 700px at 10% -10%, rgba(124,58,237,.15), transparent 60%),
+    radial-gradient(1200px 700px at 110% 10%, rgba(37,99,235,.12), transparent 60%),
+    linear-gradient(180deg,#f1f5f9 0%,#ffffff 50%,#ffffff 100%);
+  z-index: -2;
+}
+body::after {
+  content: ""; position: fixed; inset: 0; opacity: .12; pointer-events: none; z-index: -1;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.04"/></svg>');
+  background-size: 300px 300px;
+}
+
+/* Header */
+header {
+  position: sticky; top: 0;
+  backdrop-filter: saturate(180%) blur(12px);
+  background: rgba(255,255,255,.75);
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 10;
+}
+.nav {
+  max-width: 1200px; margin: 0 auto; padding: 14px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  font-weight: 800; font-size: 20px;
+}
+.logo {
+  width: 42px; height: 42px; border-radius: 14px;
+  background: conic-gradient(from 220deg at 50% 50%, var(--primary), var(--primary-2), var(--accent));
+  box-shadow: var(--shadow);
+}
+.right { margin-left: auto; display: flex; gap: 12px; flex-wrap: wrap; }
+.chip {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 999px;
+  padding: 8px 14px; font-weight: 600; font-size: 14px; cursor: default;
+}
+
+/* Main */
+main { max-width: 1200px; margin: 0 auto; padding: 36px 20px 100px; }
+
+/* Hero */
+.hero {
+  display: grid; grid-template-columns: 1.1fr .9fr; gap: 32px; align-items: center;
+  background: linear-gradient(135deg, rgba(37,99,235,.07), rgba(124,58,237,.07));
+  border: 1px solid #e2e8f0; border-radius: 28px; padding: 28px 32px;
+  box-shadow: var(--shadow);
+}
+.hero h1 { font-size: clamp(32px,3.2vw,48px); font-weight: 800; margin-bottom: 12px; }
+.hero p { color: var(--muted); font-size: 18px; max-width: 480px; }
+.actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 16px; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 20px; border-radius: 14px; border: 0; cursor: pointer;
+  background: var(--primary); color: #fff; font-weight: 700; font-size: 16px;
+  transition: all .2s;
+}
+.btn:hover { filter: brightness(.95); transform: translateY(-1px); }
+.btn.secondary { background: #fff; color: var(--text); border: 1px solid #e2e8f0; }
+
+/* Grid & Cards */
+.grid {
+  display: grid; gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+}
+.card {
+  position: relative; background: var(--card);
+  border: 1px solid #e2e8f0; border-radius: var(--radius);
+  padding: 22px; box-shadow: var(--shadow);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+.card:hover { transform: translateY(-6px); box-shadow: 0 18px 44px rgba(0,0,0,.08); }
+.card h3 { margin-bottom: 6px; font-size: 18px; }
+.tag {
+  display: inline-block; background: #eef2ff; color: #1e3a8a;
+  padding: 6px 10px; border-radius: 999px; font-weight: 700; font-size: 12px;
+  border: 1px solid #c7d2fe; margin-bottom: 6px;
+}
+.go { position: absolute; right: 16px; bottom: 16px; font-weight: 700; color: var(--primary); }
+
+/* Footer */
+footer {
+  max-width: 1200px; margin: 0 auto; padding: 24px 20px;
+  color: #64748b; border-top: 1px solid #e2e8f0; font-size: 14px;
+}
+
+/* Responsive */
+@media (max-width: 900px) { .hero { grid-template-columns: 1fr; } }
+a:focus, button:focus { outline: 3px solid var(--ring); outline-offset: 2px; }
+
+.floating-panel {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 999;
+}
+
+.fab {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: white;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.fab img {
+  width: 28px;
+  height: 28px;
+}
+
+.fab:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+}
+
+.mini-buttons {
+  display: flex;
+  justify-content: center; /* Center align */
+  gap: 20px; /* Keep them close but with a nice gap */
+  margin: 16px 0 24px;
+  flex-wrap: wrap;
+}
+
+.mini-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px; /* Pill shape */
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  color: white;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
+
+/* Button colors */
+.games-btn {
+  background: linear-gradient(135deg, #a6bef3, #1d4ed8);
+}
+
+.quizzes-btn {
+  background: linear-gradient(135deg, #6d28d9,#caaff8);
+}
+
+/* Hover animation for both */
+.mini-btn:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Icon for Games (left side) */
+.games-btn:hover::before {
+  content: attr(data-icon);
+  position: absolute;
+  left: -28px;
+  font-size: 18px;
+  animation: bounce-rotate 0.6s ease;
+}
+
+/* Icon for Quizzes (right side) */
+.quizzes-btn:hover::before {
+  content: attr(data-icon);
+  position: absolute;
+  right: -28px;
+  font-size: 18px;
+  animation: bounce-rotate 0.6s ease;
+}
+
+@keyframes bounce-rotate {
+  0% { transform: translateY(0) rotate(0deg); }
+  30% { transform: translateY(-6px) rotate(-10deg); }
+  60% { transform: translateY(3px) rotate(10deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+}
+
+
+
+ /* .streak-section {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.streak-section h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.streak-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.streak-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #e5e7eb; 
+  font-size: 18px;
+  transition: all 0.3s ease;
+}
+
+.streak-day.active {
+  background: linear-gradient(135deg, #fdd48c, #fdcb41); 
+  color: white;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.streak-day p {
+  font-size: 12px;
+  margin-top: 4px;
+}  */
+.streak-section {
+  text-align: center;
+  margin: 30px 0;
+}
+
+.streak-section h2 {
+  font-size: 20px;
+  margin-bottom: 15px;
+}
+
+.streak-container {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.streak-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: #e5e7eb; /* inactive */
+  font-size: 18px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.streak-day.active {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.streak-day.active span {
+  display: inline-block;
+  animation: flame-bounce 0.6s infinite alternate;
+}
+
+@keyframes flame-bounce {
+  0% { transform: scale(1) translateY(0); }
+  100% { transform: scale(1.2) translateY(-2px); }
+}
+
+.streak-day p {
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+
+
+
+.profile-menu {
+  position: relative;
+}
+
+.profile-icon {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.profile-icon:hover {
+  background: #f1f5f9;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  display: none;
+  flex-direction: column;
+  min-width: 160px;
+  padding: 10px 0;
+  z-index: 20;
+}
+
+.profile-dropdown a {
+  display: block;
+  padding: 10px 16px;
+  color: #111827;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.profile-dropdown a:hover {
+  background: #f3f4f6;
+}
+
+
+
+
+/* Chatbot widget */
+.chatbot-widget {
+  position: fixed;
+  bottom: 80px;
+  right: 24px;
+  width: 320px;
+  height: 400px;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 1001;
+  font-family: sans-serif;
+  transform: scale(0);
+  opacity: 0;
+  transition: all 0.3s ease;
+}
+.chatbot-widget.open {
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%, 50%) scale(1);
+  width: 500px;
+  height: 600px;
+  opacity: 1;
+}
+
+.chatbot-header {
+  background: #2563eb;
+  color: white;
+  padding: 12px 16px;
+  font-weight: 600;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chatbot-close {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.chatbot-body {
+  flex: 1;
+  padding: 12px;
+  overflow-y: auto;
+  font-size: 14px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chatbot-footer {
+  display: flex;
+  border-top: 1px solid #e5e7eb;
+}
+.chatbot-footer input {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+.chatbot-footer button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+/* Overlay */
+#chatbot-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.25);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  display: none;
+}
+#chatbot-overlay.active { display: block; }
+
+</style>
+</head>
+<body>
+<header>
+  <div class="nav">
+    <div class="brand">
+      <div><img src="sehat.png" height=30 width=30 alt="Health illustration"></div>
+      <span>Sehat Saathi</span>
+    </div>
+    <div class="right">
+      <span class="chip">Log In</span>
+      <span class="chip">Sign In</span>
+      <!-- <span><img src="icons8-profile.gif" alt="Health illustration"></span> -->
+
+      <div class="profile-menu">
+      <button id="profileBtn" class="profile-icon" aria-label="Profile Menu"><img src="icons8-profile.gif" alt="Health illustration"></button>
+       <div class="profile-dropdown" id="profileDropdown">
+        <a href="#">Profile</a>
+        <a href="#">Settings</a>
+        <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Help</a>
+    </div>
+  </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div>
+      <h1>SEHAT SAATHI</h1>
+      <h2>Your Health Partner</h2>
+      <p>Chatbot, health library, emergency help, reminders, multilingual content—designed for every phone and every language in India.</p>
+      <div class="actions">
+        <a class="btn" href="#topics">Explore Topics</a>
+        <a class="btn secondary" href="#about">How it works</a>
+      </div>
+    </div>
+    <div>
+  <video autoplay muted loop playsinline style="border-radius:12px; max-width:100%; height:auto;">
+    <source src="video.mp4" type="video/mp4">
+    Your browser does not support the video tag.
+  </video>
+</div>
+
+  </section>
+
+<!-- <section class="streak-section">
+  <h2>Your 7-Day Streak</h2>
+  <div class="streak-container">
+    <div class="streak-day active"><span>🔥</span><p>Mon</p></div>
+    <div class="streak-day active"><span>🔥</span><p>Tue</p></div>
+    <div class="streak-day active"><span>🔥</span><p>Wed</p></div>
+    <div class="streak-day"><span>🔥</span><p>Thu</p></div>
+    <div class="streak-day"><span>🔥</span><p>Fri</p></div>
+    <div class="streak-day"><span>🔥</span><p>Sat</p></div>
+    <div class="streak-day"><span>🔥</span><p>Sun</p></div>
+  </div>
+</section> -->
+
+<section class="streak-section">
+  <h2>Your 7-Day Streak</h2>
+  <div class="streak-container" id="streakContainer">
+    <!-- Days will be generated dynamically by JavaScript -->
+  </div>
+</section>
+
+
+
+  <section class="section" id="topics" style="margin-top:40px;">
+    <h2>All Topics</h2>
+    <div class="grid">
+      <a class="card" href="hospital_support.html"><span class="tag">1</span><h3>Hospital Support</h3><div>Appointments + booking</div><div class="go">→</div></a>
+      <a class="card" href="Reminder.html"><span class="tag">2</span><h3>Reminders</h3><div>water, medicines, period tracking; smart schedules</div><div class="go">→</div></a>
+      <a class="card" href="yoga.html"><span class="tag">3</span><h3>yoga and exercise tips</h3><div>Mindful movements, endless benefits</div><div class="go">→</div></a>
+      <a class="card" href="doctor_support.html"><span class="tag">4</span><h3>Doctor Support</h3><div>Verified profiles, blogs, moderation</div><div class="go">→</div></a>
+    </div>
+
+    <div class="mini-buttons">
+  <a button class="mini-btn games-btn"  href="game.html" data-icon="🎮" onclick="window.location.href='#games'">
+    🎮 Games</a>
+  </button>
+  <button class="mini-btn quizzes-btn" data-icon="📝" onclick="window.location.href='#quizzes'">
+    📝 Quizzes
+  </button>
+</div>
+
+
+
+
+
+  </section>
+</main>
+
+
+
+
+
+
+
+<!-- Floating Buttons -->
+<div class="floating-panel">
+
+    <a href="emergency.html" class="fab" title="Emergency">
+    <img src="sos.png" alt="SoS">
+  </a>
+
+  <a href="https://wa.link/o27ey4" 
+   class="fab" 
+   title="Chat on WhatsApp" 
+   target="_blank" 
+   rel="noopener">
+  <img src="icons8-whatsapp.gif" alt="WhatsApp">
+</a>
+
+  <a href="sms:+918XXXXXXXXX" class="fab" title="Send SMS">
+    <img src="icons8-sms.gif" alt="SMS">
+  </a>
+  <button class="fab" id="chatbot-btn" title="Open Chatbot">
+    <img src="icons8-chat-bot.gif" alt="Chatbot">
+  </button>
+</div>
+
+
+
+<!-- Background overlay -->
+<div id="chatbot-overlay"></div>
+
+<!-- Chatbot Widget -->
+<div class="chatbot-widget" id="chatbot-widget">
+  <div class="chatbot-header">
+    <span>Seva Health Chatbot</span>
+    <button class="chatbot-close" id="chatbot-close">&times;</button>
+  </div>
+  <div class="chatbot-body" id="chatbot-body">
+    <p>Hello! 👋 How can I help you today?</p>
+  </div>
+  <div class="chatbot-footer">
+    <input type="text" id="chatbot-input" placeholder="Type your message..." />
+    <button id="chatbot-send">Send</button>
+  </div>
+</div>
+
+
+
+
+
+<footer>
+  <div>© 2025 Seva Health • Built for India • Accessibility-first • No tracking</div>
+</footer>
+
+
+
+
+
+
+<script>
+const streakContainer = document.getElementById('streakContainer');
+const today = new Date();
+const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+
+// Example: Last 3 days active (can be fetched from database)
+const activeDays = [true, true, true, false, false, false, false]; 
+
+for (let i = 6; i >= 0; i--) {
+  const date = new Date();
+  date.setDate(today.getDate() - i);
+  const dayName = dayNames[date.getDay()];
+  
+  const isActive = activeDays[6 - i]; // Match array to day
+  const div = document.createElement('div');
+  div.className = `streak-day ${isActive ? 'active' : ''}`;
+  div.innerHTML = `<span>🔥</span><p>${dayName}</p>`;
+  
+  streakContainer.appendChild(div);
+}
+</script>
+
+
+
+<script>
+const profileBtn = document.getElementById('profileBtn');
+const profileDropdown = document.getElementById('profileDropdown');
+
+profileBtn.addEventListener('click', () => {
+  profileDropdown.style.display = profileDropdown.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Close when clicking outside
+document.addEventListener('click', (e) => {
+  if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+    profileDropdown.style.display = 'none';
+  }
+});
+</script>
+
+
+
+
+<script>
+const chatbotBtn = document.getElementById("chatbot-btn");
+const chatbotWidget = document.getElementById("chatbot-widget");
+const chatbotClose = document.getElementById("chatbot-close");
+const chatbotOverlay = document.getElementById("chatbot-overlay");
+
+chatbotBtn.addEventListener("click", () => {
+  chatbotWidget.classList.add("open");
+  chatbotOverlay.classList.add("active");
+  document.getElementById("chatbot-input").focus();
+});
+chatbotClose.addEventListener("click", () => {
+  chatbotWidget.classList.remove("open");
+  chatbotOverlay.classList.remove("active");
+});
+chatbotOverlay.addEventListener("click", () => {
+  chatbotWidget.classList.remove("open");
+  chatbotOverlay.classList.remove("active");
+});
+
+// Chatbot messages
+const chatInput = document.getElementById("chatbot-input");
+const chatBody = document.getElementById("chatbot-body");
+const chatSend = document.getElementById("chatbot-send");
+
+function addMessage(message, sender) {
+  const msg = document.createElement("div");
+  msg.style.marginBottom = "12px";
+  msg.style.padding = "8px 12px";
+  msg.style.borderRadius = "12px";
+  msg.style.maxWidth = "75%";
+  msg.style.wordWrap = "break-word";
+  if(sender === "user") {
+    msg.style.background = "#2563eb";
+    msg.style.color = "#fff";
+    msg.style.alignSelf = "flex-end";
+  } else {
+    msg.style.background = "#f3f4f6";
+    msg.style.color = "#111827";
+    msg.style.alignSelf = "flex-start";
+  }
+  msg.textContent = message;
+  chatBody.appendChild(msg);
+  chatBody.scrollTop = chatBody.scrollHeight;
+}
+
+function getReply(userMsg) {
+  userMsg = userMsg.toLowerCase();
+  // if(userMsg.includes("hello") || userMsg.includes("hi")) return "Hello! How can I assist you with your health today?";
+  // if(userMsg.includes("reminder")) return "You can set reminders for water, medicines, and period tracking using our Reminder feature.";
+  // if(userMsg.includes("yoga") || userMsg.includes("exercise")) return "I can provide simple yoga and exercise tips for your daily routine.";
+  // if(userMsg.includes("doctor")) return "You can find verified doctors and get online consultations through our Doctor Support.";
+  // if(userMsg.includes("emergency")) return "In case of an emergency, click the Emergency button at the bottom to get immediate help.";
+
+  if(userMsg.includes("hello") || userMsg.includes("hi"))
+  return "Hello! How can I assist you with your health today?";
+
+
+if(userMsg.includes("reminder"))
+    return "Set reminders for water, medicines, and period tracking using the Reminder feature.";
+
+if(userMsg.includes("yoga") || userMsg.includes("exercise"))
+    return "Do 5-10 minutes of daily yoga or exercises like Surya Namaskar, stretching, or brisk walking.";
+
+if(userMsg.includes("doctor"))
+    return "Find verified doctors and book online consultations through Doctor Support.";
+
+if(userMsg.includes("emergency"))
+    return "Click the Emergency button at the bottom to get immediate help.";
+
+// Nutrition & Diet
+if(userMsg.includes("diet") || userMsg.includes("nutrition"))
+    return "Eat a balanced diet with fruits, vegetables, whole grains, proteins, and drink plenty of water.";
+
+if(userMsg.includes("vitamins") || userMsg.includes("supplements"))
+    return "Include vitamin-rich foods like fruits, vegetables, dairy, or take supplements as prescribed.";
+
+if(userMsg.includes("hydration") || userMsg.includes("water"))
+    return "Drink at least 8 glasses of water daily and increase intake during exercise or hot weather.";
+
+if(userMsg.includes("weight loss") || userMsg.includes("lose weight"))
+    return "Combine a balanced diet with regular exercise and reduce sugary or processed foods.";
+
+if(userMsg.includes("weight gain") || userMsg.includes("gain weight"))
+    return "Eat protein-rich meals, include healthy fats, and exercise to build muscle.";
+
+if(userMsg.includes("detox") || userMsg.includes("cleanse"))
+    return "Drink plenty of water, eat fruits and vegetables, and avoid processed foods.";
+
+// Sleep & Relaxation
+if(userMsg.includes("sleep") || userMsg.includes("insomnia"))
+    return "Maintain a consistent sleep schedule, avoid screens before bed, and keep your room dark and quiet.";
+
+if(userMsg.includes("stress") || userMsg.includes("anxiety"))
+    return "Practice deep breathing, meditation, and short breaks to reduce stress and anxiety.";
+
+if(userMsg.includes("meditation") || userMsg.includes("mindfulness"))
+    return "Sit comfortably, focus on your breath, and gently bring your mind back when it wanders.";
+
+// Fitness & Exercise
+if(userMsg.includes("exercise routine") || userMsg.includes("workout"))
+    return "Include cardio, strength, and flexibility exercises. Start slow and increase intensity gradually.";
+
+if(userMsg.includes("cardio") || userMsg.includes("running") || userMsg.includes("jogging"))
+    return "Do at least 20-30 minutes of cardio like running, cycling, or brisk walking daily.";
+
+if(userMsg.includes("strength") || userMsg.includes("weights"))
+    return "Perform strength exercises 2-3 times a week using bodyweight, resistance bands, or weights.";
+
+if(userMsg.includes("flexibility") || userMsg.includes("stretching"))
+    return "Stretch all major muscles for 5-10 minutes daily to improve flexibility and prevent injuries.";
+
+// Common Illnesses
+if(userMsg.includes("cold") || userMsg.includes("flu"))
+    return "Rest, drink warm fluids, use a humidifier, and consult a doctor if symptoms worsen.";
+
+if(userMsg.includes("fever"))
+    return "Stay hydrated, rest, and take fever reducers if needed. Seek medical help if temperature is high.";
+
+if(userMsg.includes("headache") || userMsg.includes("migraine"))
+    return "Rest in a quiet dark room, stay hydrated, and take pain relief if necessary.";
+
+if(userMsg.includes("cough") || userMsg.includes("sore throat"))
+    return "Drink warm fluids, use lozenges, and consult a doctor if symptoms persist.";
+
+// Digestive Health
+if(userMsg.includes("stomach") || userMsg.includes("digestion") || userMsg.includes("bloating"))
+    return "Eat light meals, avoid spicy or oily food, drink warm water, and include fiber in your diet.";
+
+if(userMsg.includes("constipation"))
+    return "Increase fiber intake, drink plenty of water, and do regular physical activity.";
+
+if(userMsg.includes("diarrhea"))
+    return "Stay hydrated, eat bland foods, and consult a doctor if severe or persistent.";
+
+// Heart & Blood Pressure
+if(userMsg.includes("heart") || userMsg.includes("bp") || userMsg.includes("blood pressure"))
+    return "Reduce salt intake, exercise regularly, avoid smoking, and monitor your blood pressure.";
+
+if(userMsg.includes("cholesterol") || userMsg.includes("triglycerides"))
+    return "Eat low-fat foods, include fruits and vegetables, exercise, and follow your doctor's advice.";
+
+// Diabetes & Blood Sugar
+if(userMsg.includes("diabetes") || userMsg.includes("sugar"))
+    return "Maintain a balanced diet, monitor blood sugar, exercise daily, and follow your doctor’s advice.";
+
+// Bones & Joints
+if(userMsg.includes("back pain") || userMsg.includes("joint pain"))
+    return "Do gentle stretching, maintain good posture, and use heat therapy if needed.";
+
+if(userMsg.includes("bones") || userMsg.includes("calcium"))
+    return "Consume dairy, leafy greens, and perform weight-bearing exercises to strengthen bones.";
+
+// Eyes & Vision
+if(userMsg.includes("eye") || userMsg.includes("vision") || userMsg.includes("eyestrain"))
+    return "Follow the 20-20-20 rule: every 20 mins, look at something 20 feet away for 20 seconds.";
+
+// Skin & Hair
+if(userMsg.includes("skin") || userMsg.includes("acne") || userMsg.includes("rash"))
+    return "Keep skin clean, avoid harsh chemicals, use moisturizer, and consult a dermatologist if severe.";
+
+if(userMsg.includes("hair") || userMsg.includes("hairfall"))
+    return "Maintain a healthy diet, avoid excessive heat styling, and use mild shampoo.";
+
+// Allergies
+if(userMsg.includes("allergy") || userMsg.includes("sneeze") || userMsg.includes("dust"))
+    return "Avoid allergens, use antihistamines if needed, and keep your environment clean.";
+
+// Women's Health
+if(userMsg.includes("menstrual") || userMsg.includes("period"))
+    return "Track your last period and duration. Use heat pads for cramps and maintain hydration.";
+
+if(userMsg.includes("pregnancy") || userMsg.includes("prenatal"))
+    return "Take prenatal vitamins, attend regular checkups, and maintain a balanced diet.";
+
+// Child Health
+if(userMsg.includes("child health") || userMsg.includes("kid"))
+    return "Ensure proper nutrition, vaccinations, and regular checkups for children.";
+
+// Mental Health
+if(userMsg.includes("mental health") || userMsg.includes("depression"))
+    return "Talk to a professional, maintain social connections, exercise, and practice mindfulness.";
+
+if(userMsg.includes("motivation") || userMsg.includes("confidence"))
+    return "Set small achievable goals, maintain a routine, and celebrate your progress.";
+
+// Emergency & First Aid
+if(userMsg.includes("heart attack") || userMsg.includes("chest pain"))
+    return "Call emergency services immediately and chew an aspirin if advised by a doctor.";
+
+if(userMsg.includes("stroke") || userMsg.includes("weakness") || userMsg.includes("slurred speech"))
+    return "Call emergency services immediately. Note the time symptoms started.";
+
+if(userMsg.includes("burn") || userMsg.includes("cut") || userMsg.includes("wound"))
+    return "Clean the area, apply antiseptic, and bandage if necessary. Seek medical help if severe.";
+
+if(userMsg.includes("fracture") || userMsg.includes("broken bone"))
+    return "Immobilize the limb, apply ice, and get medical attention immediately.";
+
+// Infectious Diseases
+if(userMsg.includes("covid") || userMsg.includes("corona"))
+    return "Isolate, monitor symptoms, stay hydrated, and consult a doctor if breathing becomes difficult.";
+
+if(userMsg.includes("infection") || userMsg.includes("bacteria") || userMsg.includes("virus"))
+    return "Maintain hygiene, rest, and consult a doctor for proper treatment.";
+
+// Lifestyle & Habits
+if(userMsg.includes("smoking") || userMsg.includes("tobacco"))
+    return "Quit smoking to reduce risk of lung, heart, and cancer-related problems.";
+
+if(userMsg.includes("alcohol") || userMsg.includes("drinking"))
+    return "Limit alcohol consumption to reduce liver and heart problems.";
+
+// Fitness & Routine Tips
+if(userMsg.includes("morning routine"))
+    return "Start the day with hydration, light exercise, and a healthy breakfast.";
+
+if(userMsg.includes("evening routine"))
+    return "Relax, stretch, avoid screens before bed, and have a light dinner.";
+
+// Miscellaneous Health
+if(userMsg.includes("fatigue") || userMsg.includes("tired"))
+    return "Get adequate sleep, eat nutritious meals, and stay hydrated.";
+
+if(userMsg.includes("immune") || userMsg.includes("immunity"))
+    return "Eat fruits, vegetables, get adequate sleep, exercise, and manage stress.";
+
+if(userMsg.includes("digestion") || userMsg.includes("gut"))
+    return "Eat fiber-rich foods, stay hydrated, and avoid processed foods.";
+
+if(userMsg.includes("hydration") || userMsg.includes("dehydration"))
+    return "Drink water regularly, avoid excessive caffeine, and eat water-rich foods.";
+
+// Add more for coverage
+if(userMsg.includes("joint stiffness") || userMsg.includes("arthritis"))
+    return "Exercise gently, maintain a healthy weight, and consult a doctor for medications.";
+
+if(userMsg.includes("immune booster") || userMsg.includes("vitamin c"))
+    return "Include citrus fruits, leafy greens, and maintain a balanced diet.";
+
+// And you can continue adding more triggers following this pattern.
+
+  return "Sorry, I didn't understand that. Can you try rephrasing?";
+}
+
+chatSend.addEventListener("click", () => {
+  const userMsg = chatInput.value.trim();
+  if(!userMsg) return;
+  addMessage(userMsg, "user");
+  chatInput.value = "";
+  setTimeout(() => {
+    const reply = getReply(userMsg);
+    addMessage(reply, "bot");
+  }, 600);
+});
+
+chatInput.addEventListener("keypress", (e) => {
+  if(e.key === "Enter") {
+    chatSend.click();
+    e.preventDefault();
+  }
+});
+</script>
+
+</body>
+</html>

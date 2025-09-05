@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SMS / IVR – Seva Health</title>
+  <style>
+    body {
+      margin:0;
+      font-family:system-ui,Arial,sans-serif;
+      background:linear-gradient(135deg,#fef9c3,#ffffff);
+      color:#1e293b;
+      display:flex;
+      flex-direction:column;
+      min-height:100vh;
+    }
+    header {
+      background:#ca8a04;
+      color:#fff;
+      padding:20px;
+      text-align:center;
+      font-size:1.6em;
+      font-weight:bold;
+      box-shadow:0 4px 10px rgba(0,0,0,0.3);
+    }
+    main {
+      flex:1;
+      max-width:600px;
+      margin:0 auto;
+      padding:20px;
+    }
+    h2 {
+      margin-top:25px;
+      font-size:1.3em;
+      border-left:6px solid #ca8a04;
+      padding-left:10px;
+      color:#78350f;
+    }
+    .box {
+      background:#fff;
+      border-radius:14px;
+      padding:15px;
+      box-shadow:0 4px 10px rgba(0,0,0,0.1);
+      margin-top:15px;
+    }
+    input,button,select {
+      padding:10px;
+      border-radius:10px;
+      border:1px solid #d6d3d1;
+      font-size:1em;
+      margin:5px 0;
+    }
+    button {
+      background:#ca8a04;
+      color:#fff;
+      font-weight:bold;
+      cursor:pointer;
+      transition:background .2s;
+    }
+    button:hover {
+      background:#a16207;
+    }
+    .log {
+      margin-top:20px;
+      background:#fff7ed;
+      border:1px solid #fed7aa;
+      border-radius:12px;
+      padding:15px;
+      font-size:.95em;
+      color:#7c2d12;
+      min-height:60px;
+      white-space:pre-line;
+    }
+    footer {
+      text-align:center;
+      background:#f3f4f6;
+      padding:15px;
+      font-size:.9em;
+      color:#475569;
+    }
+  </style>
+</head>
+<body>
+  <header>📱 SMS & IVR Support</header>
+  <main>
+    <h2>SMS Keyword Flow</h2>
+    <div class="box">
+      <label for="smsInput">Type a keyword (e.g., FEVER, ORS, DENGUE)</label><br>
+      <input type="text" id="smsInput" placeholder="Enter keyword...">
+      <button onclick="sendSMS()">Send</button>
+    </div>
+
+    <h2>IVR Menu (Demo)</h2>
+    <div class="box">
+      <label for="ivrSelect">Choose an option:</label><br>
+      <select id="ivrSelect">
+        <option value="1">1. Health Tips</option>
+        <option value="2">2. Medicine Reminders</option>
+        <option value="3">3. Emergency Info</option>
+      </select>
+      <button onclick="playIVR()">Play</button>
+    </div>
+
+    <div class="log" id="log">Status: Ready</div>
+  </main>
+  <footer>© 2025 Seva Health • SMS & IVR Simulation</footer>
+
+  <script>
+    const logBox = document.getElementById('log');
+
+    function log(msg) {
+      logBox.innerText += "\\n" + msg;
+    }
+
+    function sendSMS() {
+      const input = document.getElementById('smsInput').value.trim().toUpperCase();
+      if (!input) { log("⚠️ Please type a keyword."); return; }
+
+      log("📤 You: " + input);
+
+      let reply = "❓ Unknown keyword. Try FEVER, ORS, or DENGUE.";
+      if (input === "FEVER") {
+        reply = "🤒 For fever: Stay hydrated, take paracetamol if needed, and rest. See a doctor if >3 days.";
+      } else if (input === "ORS") {
+        reply = "🥤 ORS Recipe: 6 tsp sugar + 1/2 tsp salt in 1 liter of clean water. Sip slowly.";
+      } else if (input === "DENGUE") {
+        reply = "🦟 Dengue Care: Drink plenty of fluids, avoid aspirin/ibuprofen. Watch for bleeding or severe pain.";
+      }
+      setTimeout(() => log("📥 SevaBot: " + reply), 500);
+    }
+
+    function playIVR() {
+      const choice = document.getElementById('ivrSelect').value;
+      let response = "";
+      if (choice === "1") {
+        response = "📞 IVR: Health Tip – Drink 8 glasses of water daily 💧";
+      } else if (choice === "2") {
+        response = "📞 IVR: Medicine Reminder – Don’t forget your evening dose 💊";
+      } else if (choice === "3") {
+        response = "📞 IVR: Emergency Info – Dial 112 (Police) or 108 (Ambulance) 🚨";
+      }
+      log(response);
+    }
+  </script>
+</body>
+</html>

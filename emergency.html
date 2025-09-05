@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Emergency – Seva Health</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --primary: #2563eb;
+  --accent: #dc2626;
+  --ring: #3b82f6;
+  --shadow: 0 12px 40px rgba(0,0,0,.06);
+  --radius: 20px;
+}
+
+* { box-sizing: border-box; margin:0; padding:0; }
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+header {
+  position: sticky; top:0;
+  backdrop-filter: saturate(180%) blur(12px);
+  background: rgba(255,255,255,.75);
+  border-bottom: 1px solid #e5e7eb;
+  padding: 20px;
+  text-align: center;
+  font-size: 1.6em;
+  font-weight: 700;
+  z-index: 10;
+  color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+/* Main */
+main {
+  flex:1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+/* SOS button */
+.sos-button {
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  font-size: 2em;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 0 30px rgba(220,38,38,0.6), 0 15px 30px rgba(0,0,0,0.25);
+  transition: transform .2s, background .2s, box-shadow .2s;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: glow 2s infinite;
+}
+
+.sos-button span { position: relative; z-index: 1; }
+
+.sos-button::before {
+  content: "";
+  position: absolute;
+  width: 300%;
+  height: 300%;
+  background: rgba(220,38,38,0.3);
+  border-radius: 50%;
+  top: -100%;
+  left: -100%;
+  animation: pulse 2.5s infinite;
+  z-index: 0;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0); opacity: 0.6; }
+  50% { transform: scale(1); opacity: 0; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(220,38,38,0.6), 0 15px 30px rgba(0,0,0,0.25); }
+  50% { box-shadow: 0 0 35px rgba(220,38,38,0.9), 0 15px 30px rgba(0,0,0,0.25); }
+}
+
+.sos-button:hover {
+  transform: scale(1.1);
+  background: #b91c1c;
+  animation: glow-fast 0.5s infinite alternate;
+}
+
+@keyframes glow-fast {
+  0% { box-shadow: 0 0 25px rgba(220,38,38,0.7), 0 15px 30px rgba(0,0,0,0.25); }
+  50% { box-shadow: 0 0 45px rgba(220,38,38,1), 0 15px 30px rgba(0,0,0,0.25); }
+  100% { box-shadow: 0 0 25px rgba(220,38,38,0.7), 0 15px 30px rgba(0,0,0,0.25); }
+}
+
+/* Info */
+.info {
+  margin-top: 25px;
+  text-align: center;
+  font-size: 1.1em;
+  color: var(--muted);
+  background: var(--card);
+  padding: 20px 25px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  max-width: 400px;
+}
+
+/* Log */
+.log {
+  margin-top: 20px;
+  max-width: 450px;
+  width: 100%;
+  background: var(--card);
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius);
+  padding: 15px 20px;
+  font-size: 0.95em;
+  color: var(--text);
+  box-shadow: var(--shadow);
+  min-height: 60px;
+  text-align: center;
+  transition: all 0.3s;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  background: #f3f4f6;
+  padding: 15px 10px;
+  font-size: 0.9em;
+  color: #64748b;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Responsive */
+@media (max-width: 500px) {
+  .sos-button { width: 160px; height: 160px; font-size: 1.8em; }
+  .info, .log { max-width: 90%; padding: 15px 20px; }
+}
+</style>
+</head>
+<body>
+
+<header>🚨 Emergency Help</header>
+
+<main>
+  <button class="sos-button" id="sosBtn"><span>SOS</span></button>
+  <div class="info">Press to call <strong>112</strong> (Police) or <strong>108</strong> (Ambulance)<br>with optional GPS sharing</div>
+  <div class="log" id="log">Status: Ready</div>
+</main>
+
+<footer>© 2025 Seva Health • Emergency Support</footer>
+
+<script>
+const logBox = document.getElementById('log');
+const sosBtn = document.getElementById('sosBtn');
+
+function log(msg) {
+  logBox.innerHTML = "Status: " + msg;
+}
+
+sosBtn.addEventListener('click', () => {
+  log("SOS button pressed. Attempting to share location...");
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(pos => {
+      const { latitude, longitude } = pos.coords;
+      log(`Location acquired: Lat ${latitude.toFixed(4)}, Lng ${longitude.toFixed(4)}. Preparing call...`);
+      window.location.href = "tel:112";
+    }, err => {
+      log("Location unavailable. Still dialing 112...");
+      window.location.href = "tel:112";
+    });
+  } else {
+    log("Geolocation not supported. Dialing 112...");
+    window.location.href = "tel:112";
+  }
+});
+</script>
+
+</body>
+</html>

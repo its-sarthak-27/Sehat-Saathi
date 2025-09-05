@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en-IN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Seva Health – Health Reminders</title>
+<style>
+/* --- Modern Styling --- */
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --text: #0f172a;
+  --muted: #475569;
+  --primary: #2563eb;
+  --primary-2: #7c3aed;
+  --accent: #059669;
+  --shadow: 0 12px 40px rgba(0,0,0,.06);
+  --radius: 20px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  line-height: 1.55;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+/* Header */
+header {
+  position: sticky; top: 0;
+  backdrop-filter: saturate(180%) blur(12px);
+  background: rgba(255,255,255,.8);
+  border-bottom: 1px solid #e5e7eb;
+  z-index: 10;
+}
+.nav {
+  max-width: 1200px; margin: 0 auto; padding: 14px 20px;
+  display: flex; align-items: center; gap: 16px;
+}
+.brand {
+  display: flex; align-items: center; gap: 12px;
+  font-weight: 800; font-size: 20px;
+}
+.logo {
+  
+  width: 42px; height: 42px; border-radius: 14px;
+  background: conic-gradient(from 220deg at 50% 50%, var(--primary), var(--primary-2), var(--accent));
+  box-shadow: var(--shadow);
+}
+.right { margin-left: auto; display: flex; gap: 12px; flex-wrap: wrap; }
+.chip {
+  background: #fff; border: 1px solid #e2e8f0; border-radius: 999px;
+  padding: 8px 14px; font-weight: 600; font-size: 14px; cursor: default;
+}
+main { flex: 1; max-width: 800px; margin: 0 auto; padding: 40px 20px 100px; }
+h2 { font-size: 24px; margin-bottom: 18px; color: var(--primary); }
+form {
+  background: var(--card);
+  padding: 28px;
+  border-radius: var(--radius);
+  border: 1px solid #e2e8f0;
+  box-shadow: var(--shadow);
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+label { font-weight: 600; display: block; margin-bottom: 4px; }
+select, input {
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #cbd5e1;
+  font-size: 1em;
+  width: 100%;
+}
+button {
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover { background: #1d4ed8; }
+.hidden { display: none; }
+.card {
+  background: var(--card);
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 18px 22px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.card strong { color: var(--primary); font-size: 1.1em; }
+.actions { display: flex; gap: 8px; }
+.action-btn {
+  border: none; background: #f1f5f9; padding: 6px 10px;
+  border-radius: 8px; font-size: 14px; cursor: pointer;
+}
+.action-btn.delete { background: #fee2e2; color: #b91c1c; }
+.action-btn.edit { background: #dbeafe; color: #1e40af; }
+.log {
+  margin-top: 20px;
+  background: #eef2ff;
+  border: 1px solid #c7d2fe;
+  border-radius: 14px;
+  padding: 16px;
+  font-size: 15px;
+}
+
+
+
+
+
+.profile-menu {
+  position: relative;
+}
+
+.profile-icon {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.profile-icon:hover {
+  background: #f1f5f9;
+}
+
+.profile-dropdown {
+  position: absolute;
+  top: 50px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  display: none;
+  flex-direction: column;
+  min-width: 160px;
+  padding: 10px 0;
+  z-index: 20;
+}
+
+.profile-dropdown a {
+  display: block;
+  padding: 10px 16px;
+  color: #111827;
+  font-size: 15px;
+  text-decoration: none;
+  transition: background 0.2s ease;
+}
+
+.profile-dropdown a:hover {
+  background: #f3f4f6;
+}
+
+
+footer {
+  text-align: center;
+  border-top: 1px solid #e2e8f0;
+  padding: 20px;
+  font-size: 14px;
+  color: #64748b;
+}
+</style>
+</head>
+<body>
+<header><div class="nav">
+    <div class="brand">
+      <div> <a href ="index.html"> </a><img src="sehat.png" height=30 width=30 alt="Health illustration"></a></div>
+      <span>Sehat Saathi – Reminder ⏰</span>
+    </div>
+    <div class="right">
+      <span class="chip">Log In</span>
+      <span class="chip">Sign In</span>
+      <!-- <span><img src="icons8-profile.gif" alt="Health illustration"></span> -->
+
+      <div class="profile-menu">
+      <button id="profileBtn" class="profile-icon" aria-label="Profile Menu"><img src="icons8-profile.gif" alt="Health illustration"></button>
+       <div class="profile-dropdown" id="profileDropdown">
+        <a href="#">Profile</a>
+        <a href="#">Settings</a>
+        <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Help</a>
+    </div>
+  </div>
+  </div>
+</header>
+
+<main>
+  <h2>Set a Reminder</h2>
+  <form id="reminderForm">
+    <div>
+      <label for="type">Reminder Type</label>
+      <select id="type" required>
+        <option value="Water">💧 Water</option>
+        <option value="Medicine">💊 Medicine</option>
+        <option value="Period">🩸 Period Tracking</option>
+      </select>
+    </div>
+    <div id="timeField">
+      <label for="time">Time</label>
+      <input type="time" id="time">
+    </div>
+    <div id="periodFields" class="hidden">
+      <label for="lastDate">Last Period Date</label>
+      <input type="date" id="lastDate">
+      <label for="duration">Cycle Duration (days)</label>
+      <input type="number" id="duration" min="20" max="40" placeholder="e.g. 28">
+    </div>
+    <button type="submit">Add Reminder</button>
+  </form>
+
+  <div id="reminderList">
+    <h2>Your Reminders</h2>
+  </div>
+
+  <div class="log" id="log">Status: Ready</div>
+</main>
+<footer>© 2025 Seva Health • Smart Health Nudges</footer>
+
+<script>
+const form = document.getElementById('reminderForm');
+const typeField = document.getElementById('type');
+const timeField = document.getElementById('timeField');
+const periodFields = document.getElementById('periodFields');
+const reminderList = document.getElementById('reminderList');
+const logBox = document.getElementById('log');
+let reminders = [];
+
+typeField.addEventListener('change', () => {
+  if (typeField.value === 'Period') {
+    timeField.classList.add('hidden');
+    periodFields.classList.remove('hidden');
+  } else {
+    timeField.classList.remove('hidden');
+    periodFields.classList.add('hidden');
+  }
+});
+
+function log(msg) { logBox.innerText = "Status: " + msg; }
+
+function calcNextPeriod(lastDate, duration) {
+  const start = new Date(lastDate);
+  start.setDate(start.getDate() + parseInt(duration));
+  return start.toISOString().split('T')[0];
+}
+
+function renderReminders() {
+  reminderList.innerHTML = "<h2>Your Reminders</h2>";
+  reminders.forEach((r, i) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    let content = '';
+    if (r.type === 'Period') {
+      content = `<strong>${r.type}</strong> Last: ${r.lastDate} | Cycle: ${r.duration} days | Next: ${r.nextDate}`;
+    } else {
+      content = `<strong>${r.type}</strong> ⏰ ${r.time}`;
+    }
+    card.innerHTML = `
+      <div>${content}</div>
+      <div class="actions">
+        <button class="action-btn edit" onclick="editReminder(${i})">Edit</button>
+        <button class="action-btn delete" onclick="deleteReminder(${i})">Delete</button>
+      </div>`;
+    reminderList.appendChild(card);
+  });
+}
+
+form.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const type = typeField.value;
+  if (type === 'Period') {
+    const lastDate = document.getElementById('lastDate').value;
+    const duration = document.getElementById('duration').value;
+    if (!lastDate || !duration) { log('Please provide last date & duration'); return; }
+    const nextDate = calcNextPeriod(lastDate, duration);
+    reminders.push({ type, lastDate, duration, nextDate });
+    log(`Period tracking set. Next expected: ${nextDate}`);
+  } else {
+    const time = document.getElementById('time').value;
+    if (!time) { log('Please select a time'); return; }
+    reminders.push({ type, time });
+    log(`${type} reminder set for ${time}`);
+  }
+  renderReminders();
+  form.reset();
+  timeField.classList.remove('hidden');
+  periodFields.classList.add('hidden');
+});
+
+function deleteReminder(i) {
+  reminders.splice(i, 1);
+  renderReminders();
+  log('Reminder deleted');
+}
+
+function editReminder(i) {
+  const r = reminders[i];
+  typeField.value = r.type;
+  if (r.type === 'Period') {
+    timeField.classList.add('hidden');
+    periodFields.classList.remove('hidden');
+    document.getElementById('lastDate').value = r.lastDate;
+    document.getElementById('duration').value = r.duration;
+  } else {
+    timeField.classList.remove('hidden');
+    periodFields.classList.add('hidden');
+    document.getElementById('time').value = r.time;
+  }
+  reminders.splice(i, 1);
+  log('Editing reminder...');
+}
+
+// Nudge every minute (and 3-day period alert)
+setInterval(() => {
+  const now = new Date();
+  const current = now.toTimeString().slice(0,5);
+  const today = now.toISOString().split('T')[0];
+  reminders.forEach(r => {
+    if (r.type !== 'Period' && r.time === current) {
+      log(`Time for your ${r.type}!`);
+      alert(`⏰ Reminder: Time for your ${r.type}!`);
+    }
+    if (r.type === 'Period') {
+      const nextDate = new Date(r.nextDate);
+      const diff = Math.ceil((nextDate - now) / (1000*60*60*24));
+      if (diff === 3) {
+        log(`Your period is expected in 3 days!`);
+        alert(`🩸 Heads up! Your period is expected in 3 days (${r.nextDate}).`);
+      }
+    }
+  });
+}, 60000);
+</script>
+
+<script>
+const profileBtn = document.getElementById('profileBtn');
+const profileDropdown = document.getElementById('profileDropdown');
+
+profileBtn.addEventListener('click', () => {
+  profileDropdown.style.display = profileDropdown.style.display === 'flex' ? 'none' : 'flex';
+});
+
+// Close when clicking outside
+document.addEventListener('click', (e) => {
+  if (!profileBtn.contains(e.target) && !profileDropdown.contains(e.target)) {
+    profileDropdown.style.display = 'none';
+  }
+});
+</script>
+
+</body>
+</html>
